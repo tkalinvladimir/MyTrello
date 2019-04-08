@@ -38,40 +38,71 @@
     }
 </script>
 
-Deck view
-<span>${deck.name}</span>
+<h5><b>${deck.name}</b></h5>
+<hr>
 <br />
-Добавить новую карточку
-<div>
-    <form action="\addCard" method="post" enctype="multipart/form-data">
-        <input type="text" name="text" placeholder="Введите текст" />
-        <input type="file" name="file">
-        <input type="hidden" value="${deck.id}" name="deckId">
-        <input type="hidden" name="_csrf" value="${_csrf.token}" />
 
-        <select name="deckstatus_id">
-            <#if available_statuses??>
-                <#list available_statuses as status2>
-                    <option value="${status2.id}">${status2.status}</option>
-                </#list>
-            </#if>
-        </select>
 
-        <button type="submit">Добавить</button>
-    </form>
+<a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    Add new card
+</a>
+<div class="collapse mt-2" id="collapseExample" >
+    <div class="form-group" action="\addCard">
+        <form method="post" action="\addCard" method="post" enctype="multipart/form-data">
+            <div class="form-group row col-sm-6">
+                <input type="text" name="text" class="form-control" placeholder="Введите текст"/>
+                <input type="hidden" value="${deck.id}" name="deckId">
+                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+            </div>
+
+
+            <div class="form-group">
+                <div class="custom-file">
+                    <input type="file" name="file" id="customFile">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+            </div>
+
+
+
+            <div class="form-group row col-sm-1 mt-1">
+                <select name="deckstatus_id" class="form-control">
+                    <#if available_statuses??>
+                        <#list available_statuses as status2>
+                            <option value="${status2.id}">${status2.status}</option>
+                        </#list>
+                    </#if>
+                </select>
+                <button type="submit" class="btn-primary ml-2 mt-2">Добавить</button>
+            </div>
+
+        </form>
+    </div>
 </div>
 
-<br />
+
+
+<hr>
 
 <div>Список карточек</div>
+
+<div class="row">
+    <div class="col-sm-6">
     <#list cards as card>
-    <div>
-        <form>
-            <input type="hidden" value="${card.id}" name="card_id">
-            <input type="text" value="${card.text}" name="card_text" onchange="cardEditText(${card.id}, ${deck.id}, '${_csrf.token}', this.value)">
+    <div class="card my-3" >
+        <form class="form-inline">
+            <div class="ml-2">
+                <#if card.fileName??>
+                    <img src="/img/${card.fileName}" class="card-img-top">
+                </#if>
+            </div>
+            <input type="hidden" value="${card.id}" name="card_id" >
+
+            <input type="text" class="form-control ml-2 mr-2" value="${card.text}" name="card_text" onchange="cardEditText(${card.id}, ${deck.id}, '${_csrf.token}', this.value)">
+
             <input type="hidden" name="_csrf" value="${_csrf.token}" />
             <input type="hidden" value="${deck.id}" name="deckId">
-            <select name="cardstatus_id" onchange="cardEditStatus(${card.id}, ${deck.id}, '${_csrf.token}', this.value)">
+            <select name="cardstatus_id" class="form-control" onchange="cardEditStatus(${card.id}, ${deck.id}, '${_csrf.token}', this.value)">
                 <#if available_statuses??>
                     <#list available_statuses as status2>
                         <#if status2.id == card.status.id>
@@ -82,17 +113,20 @@ Deck view
                     </#list>
                 </#if>
             </select>
-            <div>
-                <#if card.fileName??>
-                    <img src="/img/${card.fileName}">
-                </#if>
+            <div class="pull-right">
+            <button type="button" class="btn-primary ml-2 mt-2 mb-2" onclick="cardDel(${card.id}, ${deck.id}, '${_csrf.token}')">X</button>
             </div>
-            <button type="button" onclick="cardDel(${card.id}, ${deck.id}, '${_csrf.token}')">X</button>
+
+
+
         </form>
     </div>
     <#else>
     empty
     </#list>
+    </div>
+
+
 
 <br />
 

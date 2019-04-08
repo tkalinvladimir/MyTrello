@@ -47,6 +47,15 @@ public class DeckController {
         return "redirect:/main";
     }
 
+    @PostMapping("/deckDel")
+    public String deckDel(
+            @RequestParam Map<String, String> form,
+            @RequestParam("deck_id") Deck deck
+    ) {
+        deckRepo.deleteById(deck.getId());
+        return "redirect:/main";
+    }
+
     @PostMapping("/deckStatusAdd")
     public String deckStatusSave(
             @RequestParam String deckstatus,
