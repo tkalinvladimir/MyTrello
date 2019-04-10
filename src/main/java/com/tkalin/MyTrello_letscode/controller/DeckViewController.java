@@ -44,7 +44,7 @@ public class DeckViewController {
         model.addAttribute("deck", deck);
 
         // get decks only for acceptable user
-        if (deck.getUser().getId() != user.getId()) {
+        if (!deck.getUser().getId().equals(user.getId())) {
             return "redirect:/main";
         }
         //

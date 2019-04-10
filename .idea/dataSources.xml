@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="3606091455">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
     <data-source source="LOCAL" name="PostgreSQL - trello@localhost" uuid="7603a75d-3e41-46b6-861d-4611e943bad4">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
