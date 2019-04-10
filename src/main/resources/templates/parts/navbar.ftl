@@ -15,13 +15,18 @@
             <li class="nav-item">
                 <a class="nav-link" href="/main">Decks</a>
             </li>
-            <#if isAdmin>
+        <#if isAdmin>
             <li class="nav-item">
                 <a class="nav-link" href="/user">Users</a>
             </li>
-            </#if>
-            </ul>
-            <div class="navbar-text mr-3">${name}</div>
-              <@l.logout />
-        </div>
-    </nav>
+        </#if>
+        <#if user??>
+            <li class="nav-item">
+                <a class="nav-link" href="/user/profile">Profile</a>
+            </li>
+        </#if>
+        </ul>
+        <div class="navbar-text mr-3">${name}</div>
+    <@l.logout />
+    </div>
+</nav>

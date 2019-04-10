@@ -46,11 +46,16 @@
 <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
     Add new card
 </a>
-<div class="collapse mt-2" id="collapseExample" >
+<div class="collapse mt-2 <#if card??>show</#if>" id="collapseExample" >
     <div class="form-group" action="\addCard">
         <form method="post" action="\addCard" method="post" enctype="multipart/form-data">
             <div class="form-group row col-sm-6">
-                <input type="text" name="text" class="form-control" placeholder="Введите текст"/>
+                <input type="text" name="text" class="form-control ${(textError??)?string('is-invalid', '')}" value="<#if card??>${card.text}</#if>" placeholder="Введите текст"/>
+                <#if textError??>
+                <div class="invalid-feedback">
+                    ${textError}
+                </div>
+                </#if>
                 <input type="hidden" value="${deck.id}" name="deckId">
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
             </div>

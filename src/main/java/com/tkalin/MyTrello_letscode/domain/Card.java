@@ -1,6 +1,9 @@
 package com.tkalin.MyTrello_letscode.domain;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Card {
@@ -8,6 +11,8 @@ public class Card {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "Please fill the text")
+    @Length(max = 2048, message = "Too long")
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER)

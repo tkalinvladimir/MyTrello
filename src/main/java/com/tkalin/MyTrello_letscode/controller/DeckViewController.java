@@ -12,9 +12,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -55,30 +60,42 @@ public class DeckViewController {
 
     @PostMapping("/addCard")
     public String addCart(
-            @RequestParam String text,
+            @Valid Card card,
+            BindingResult bindingResult,
+            Model model,
             @RequestParam("deckstatus_id") DeckStatuses deckStatuses,
             @RequestParam Map<String, String> form,
             @RequestParam("deckId") Deck deck,
             @RequestParam("file")MultipartFile file
 
             ) throws IOException {
-        Card card = new Card(text, deckStatuses, deck);
 
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
+        card.setStatus(deckStatuses);
+        card.setDeck(deck);
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+
+            model.mergeAttributes(errorsMap);
+            model.addAttribute("card", card);
+        } else {
+
+            if (file != null && !file.getOriginalFilename().isEmpty()) {
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdir();
+                }
+                String uuidFile = UUID.randomUUID().toString();
+                String resultFileName = uuidFile + "." + file.getOriginalFilename();
+                file.transferTo(new File(uploadPath + "/" + resultFileName));
+                card.setFileName(resultFileName);
             }
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFileName = uuidFile + "." + file.getOriginalFilename();
-            file.transferTo(new File(uploadPath + "/" + resultFileName));
-            card.setFileName(resultFileName);
+            model.addAttribute("card", null);
+
+            cardRepo.save(card);
         }
+            return "redirect:/deck_view/" + deck.getId();
 
-
-        cardRepo.save(card);
-
-        return "redirect:/deck_view/"+deck.getId();
     }
 
     @PostMapping("/cardDel")
